@@ -2,7 +2,7 @@ package com.seba.blackjack.architecture.dao;
 
 public interface DAOConstants {
 	
-	String SELECT_USER="SELECT * FROM UTENTE WHERE Username = ? ";
+	String SELECT_USER_BY_USERNAME="SELECT * FROM UTENTE WHERE Username = ? ";
 	String INSERT_USER="INSERT INTO UTENTE VALUES (?, ?, ?)";
 	String SELECT_USER_MATCHES="SELECT * FROM PARTITAPC WHERE U_Username = ?";
 	String SELECT_CARDS="SELECT * FROM CARTA";
@@ -10,5 +10,18 @@ public interface DAOConstants {
 	String SELECT_CARDS_BY_VALUE_AND_SEED="SELECT * FROM CARTA WHERE Valore = ? AND Seme = ?";
 	String SELECT_CARD_BY_ID="SELECT * FROM CARTA WHERE ID= ?";
 	String INSERT_MATCH="INSERT INTO PARTITAPC(U_Username,Status,Puntibanco,Puntiutente) VALUES (?,?,?,?)";
+	String SELECT_USER_BY_ID="SELECT * FROM UTENTE WHERE ID = ?";
+	String UPDATE_POINTS="UPDATE PARTITAPC SET Puntiutente = ?, Puntibanco = ? WHERE ID = ?";
+	String SELECT_POINTS="SELECT Puntiutente, Puntibanco FROM PARTITAPC WHERE ID = ?";
+	String DELETE_MATCH="DELETE FROM PARTITA WHERE ID = ?";
+	//.
+	String SELECT_ALL_USERS = "SELECT * FROM UTENTE";
+	String DELETE_USER = "DELETE FROM UTENTE WHERE ID = ?";
+	String UPDATE_USER_PASSWORD = "UPDATE UTENTE SET Password = ? WHERE ID = ?";
+	String COUNT_MATCHES_BY_USER = "SELECT COUNT(*) FROM PARTITAPC WHERE U_Username = ?";
+	String SELECT_LAST_MATCH_BY_USER = "SELECT * FROM PARTITAPC WHERE U_Username = ? ORDER BY ID DESC LIMIT 1";
+	String DELETE_ALL_MATCHES_BY_USER = "DELETE FROM PARTITAPC WHERE U_Username = ?";
+	String SELECT_TOP_PLAYERS = "SELECT U_Username, SUM(Puntiutente) AS TotalPoints FROM PARTITAPC GROUP BY U_Username ORDER BY SUM(Puntiutente) DESC LIMIT ?";
+/*	String COUNT_CARDS = "SELECT COUNT(*) FROM CARTA";*/
 	
 }

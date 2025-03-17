@@ -76,25 +76,61 @@ public class CartaDAO implements DAOConstants{
 	}
 	
 	//metodo getbyvaloreeseme
-	/*
-	 * Carta carta=null;
-		PreparedStatement prst;
-		
-		try {
-			prst = conn.prepareStatement(SELECT_CARD_BY_ID);
-			prst.setLong(1, ID);
-			
-			for(int i=0; rs.next(); i++) {
-				Carta carta=new Carta();
-				carta.setId(rs.getLong(1));
-				carta.setValore(rs.getLong(2));
-				carta.setSeme(rs.getString(3));
-				carte[i]=carta;
-			}
-			
-	 * 
-	 * 
-	 * 
-	 * 
-	 * */
+	
+	public Carta getByValoreESeme(Connection conn, long valore, String seme) throws DAOException {
+	    Carta carta = null;
+	    PreparedStatement prst = null;
+	    ResultSet rs = null;
+
+	    try {
+	        prst = conn.prepareStatement(SELECT_CARDS_BY_VALUE_AND_SEED);
+	        prst.setLong(1, valore);
+	        prst.setString(2, seme);
+
+	        rs = prst.executeQuery();
+
+	        if (rs.next()) {
+	            carta = new Carta();
+	            carta.setId(rs.getLong(1));
+	            carta.setValore(rs.getLong(2));
+	            carta.setSeme(rs.getString(3));
+	        }
+	    } catch (SQLException e) {
+	        throw new DAOException(e);
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (prst != null) prst.close();
+	        } catch (SQLException e) {
+	            throw new DAOException(e);
+	        }
+	    }
+	    return carta;
+	}
+
+//	public int countCards(Connection conn) throws DAOException {
+//	    PreparedStatement prst = null;
+//	    ResultSet rs = null;
+//	    int count = 0;
+//
+//	    try {
+//	        prst = conn.prepareStatement(COUNT_CARDS);
+//	        rs = prst.executeQuery();
+//
+//	        if (rs.next()) {
+//	            count = rs.getInt(1);
+//	        }
+//	    } catch (SQLException e) {
+//	        throw new DAOException(e);
+//	    } finally {
+//	        try {
+//	            if (rs != null) rs.close();
+//	            if (prst != null) prst.close();
+//	        } catch (SQLException e) {
+//	            e.printStackTrace();
+//	        }
+//	    }
+//	    return count;
+//	}
+	
 }
