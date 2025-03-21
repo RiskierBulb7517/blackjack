@@ -42,7 +42,7 @@ public class CartaDAO implements DAOConstants{
 				carta.setSeme(rs.getString(3));
 				carte[i]=carta;
 			}
-			
+			conn.commit();
 			
 		}catch (SQLException e) {
 			throw new DAOException(e);
@@ -68,6 +68,7 @@ public class CartaDAO implements DAOConstants{
 				carta.setValore(rs.getLong(2));
 				carta.setSeme(rs.getString(3));
 			}
+			conn.commit();
 		}catch(SQLException e) {
 			throw new DAOException(e);
 		}
@@ -83,7 +84,7 @@ public class CartaDAO implements DAOConstants{
 	    ResultSet rs = null;
 
 	    try {
-	        prst = conn.prepareStatement(SELECT_CARDS_BY_VALUE_AND_SEED);
+	        prst = conn.prepareStatement(SELECT_CARD_BY_VALUE_AND_SEED);
 	        prst.setLong(1, valore);
 	        prst.setString(2, seme);
 
@@ -95,6 +96,7 @@ public class CartaDAO implements DAOConstants{
 	            carta.setValore(rs.getLong(2));
 	            carta.setSeme(rs.getString(3));
 	        }
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {

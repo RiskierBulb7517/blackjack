@@ -27,3 +27,4 @@ INSERT INTO IMMAGINI (CARTA_ID, URL_IMM) VALUES
 (41, '/img/cards/2_of_spades.png'), (42, '/img/cards/3_of_spades.png'), (43, '/img/cards/4_of_spades.png'), (44, '/img/cards/5_of_spades.png'), 
 (45, '/img/cards/6_of_spades.png'), (46, '/img/cards/7_of_spades.png'), (47, '/img/cards/8_of_spades.png'), (48, '/img/cards/9_of_spades.png'),
 (49, '/img/cards/10_of_spades.png'), (50, '/img/cards/jack_of_spades2.png'), (51, '/img/cards/queen_of_spades2.png'), (52, '/img/cards/king_of_spades2.png');
+commit;

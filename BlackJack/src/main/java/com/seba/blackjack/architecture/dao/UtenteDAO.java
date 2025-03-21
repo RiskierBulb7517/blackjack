@@ -30,36 +30,6 @@ public class UtenteDAO implements DAOConstants{
 		return dao;
 	}
 	
-	
-	public Utente getUserByID(Connection conn, String Username) throws DAOException {
-	    PreparedStatement prst = null;
-	    ResultSet rs = null;
-	    Utente utente = null;
-
-	    try {
-	        prst = conn.prepareStatement(SELECT_USER_BY_ID);
-	        prst.setString(1, Username);
-
-	        rs = prst.executeQuery();
-
-	        if (rs.next()) {
-	            utente = new Utente();
-	            utente.setUsername(rs.getString(1));
-	            utente.setEmail(rs.getString(2));
-	            utente.setPassword(rs.getString(3));
-	        }
-	    } catch (SQLException e) {
-	        throw new DAOException(e);
-	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (prst != null) prst.close();
-	        } catch (SQLException e) {
-	        	throw new DAOException(e);
-	        }
-	    }
-	    return utente;
-	}
 
 	public Utente getUserByUsername(Connection conn, String username) throws DAOException {
 	    PreparedStatement prst = null;
@@ -71,13 +41,14 @@ public class UtenteDAO implements DAOConstants{
 	        prst.setString(1, username);
 
 	        rs = prst.executeQuery();
-
+	        conn.commit();
 	        if (rs.next()) {
 	            utente = new Utente();
-	            utente.setUsername(rs.getString("ID"));
-	            utente.setEmail(rs.getString("Username"));
+	            utente.setUsername(rs.getString("Username"));
+	            utente.setEmail(rs.getString("Email"));
 	            utente.setPassword(rs.getString("Password"));
 	        }
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -106,11 +77,12 @@ public class UtenteDAO implements DAOConstants{
 
 	        for (int i = 0; rs.next(); i++) {
 	            Utente utente = new Utente();
-	            utente.setUsername(rs.getString("ID"));
-	            utente.setEmail(rs.getString("Username"));
+	            utente.setUsername(rs.getString("Username"));
+	            utente.setEmail(rs.getString("Email"));
 	            utente.setPassword(rs.getString("Password"));
 	            utenti[i] = utente;
 	        }
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -131,6 +103,7 @@ public class UtenteDAO implements DAOConstants{
 	        prst = conn.prepareStatement(DELETE_USER);
 	        prst.setString(1, Username);
 	        prst.executeUpdate();
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -150,6 +123,7 @@ public class UtenteDAO implements DAOConstants{
 	        prst.setString(1, newPassword);
 	        prst.setString(2, Username);
 	        prst.executeUpdate();
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -159,5 +133,28 @@ public class UtenteDAO implements DAOConstants{
 	            throw new DAOException(e);
 	        }
 	    }
+	}
+	
+	public void createUser(Connection conn, Utente utente) throws DAOException{
+		
+		PreparedStatement prst = null;
+
+	    try {
+	        prst = conn.prepareStatement(INSERT_USER);
+	        prst.setString(1, utente.getUsername());
+	        prst.setString(2, utente.getEmail());
+	        prst.setString(3, utente.getPassword());
+	        prst.executeUpdate();
+	        conn.commit();
+	    } catch (SQLException e) {
+	        throw new DAOException(e);
+	    } finally {
+	        try {
+	            if (prst != null) prst.close();
+	        } catch (SQLException e) {
+	            throw new DAOException(e);
+	        }
+	    }
+		
 	}
 }

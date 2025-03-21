@@ -37,6 +37,7 @@ public class PartitaPCDAO implements DAOConstants {
 	        prst.setLong(4, partita.getPuntiutente());
 
 	        prst.executeUpdate();
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -79,6 +80,7 @@ public class PartitaPCDAO implements DAOConstants {
 	            partita.setPuntiutente(rs.getLong(5));
 	            partite[i] = partita;
 	        }
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -103,6 +105,7 @@ public class PartitaPCDAO implements DAOConstants {
 	        prst.setLong(3, partitaID);
 
 	        prst.executeUpdate();
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -129,6 +132,7 @@ public class PartitaPCDAO implements DAOConstants {
 	            punteggi[0] = rs.getInt("Puntiutente");
 	            punteggi[1] = rs.getInt("Puntibanco");
 	        }
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -175,6 +179,7 @@ public class PartitaPCDAO implements DAOConstants {
 	        if (rs.next()) {
 	            count = rs.getInt(1);
 	        }
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -206,6 +211,7 @@ public class PartitaPCDAO implements DAOConstants {
 	            partita.setPuntibanco(rs.getLong(4));
 	            partita.setPuntiutente(rs.getLong(5));
 	        }
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -252,6 +258,7 @@ public class PartitaPCDAO implements DAOConstants {
 	            topPlayers[i] = rs.getString("U_Username") + " - Punti: " + rs.getInt("TotalPoints");
 	            i++;
 	        }
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
