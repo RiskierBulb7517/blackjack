@@ -37,12 +37,33 @@ class UtenteDAOTest {
 			user = UtenteDAO.getDao().getUserByUsername(conn, user.getUsername());
 			assertNotNull(user);
 			assertEquals("sam", user.getUsername());
+			DBAccess.closeConnection(conn);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Failed: "+e.getMessage());
 		}
 	}
+	
+	@Test
 	@Order(2)
+	void testGetAllUsers() {
+		try {
+			conn = DBAccess.getConnection();
+			Utente[] utenti=UtenteDAO.getDao().getAllUsers(conn);
+			assertNotNull(utenti);
+			assertTrue(utenti.length>=1);
+			for(int i=0; i<utenti.length;i++) {
+				assertNotNull(utenti[i]);
+			}
+			DBAccess.closeConnection(conn);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			fail("Failed: "+e.getMessage());
+		}
+	}
+	
+	@Order(3)
 	@Test
 	void testDeleteUser() {
 		try {
@@ -50,10 +71,13 @@ class UtenteDAOTest {
 			UtenteDAO.getDao().deleteUser(conn, user.getUsername());
 			user = UtenteDAO.getDao().getUserByUsername(conn, user.getUsername());
 			assertNull(user);
+			DBAccess.closeConnection(conn);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Failed: "+e.getMessage());
 		}
 	}
 
+	//update password test da fare --- trallallero trallalla
+	
 }

@@ -109,7 +109,7 @@ public class CartaDAO implements DAOConstants{
 	    }
 	    return carta;
 	}
-
+}
 //	public int countCards(Connection conn) throws DAOException {
 //	    PreparedStatement prst = null;
 //	    ResultSet rs = null;
@@ -135,4 +135,4 @@ public class CartaDAO implements DAOConstants{
 //	    return count;
 //	}
 	
-}
+

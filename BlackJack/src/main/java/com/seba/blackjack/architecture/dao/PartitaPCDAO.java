@@ -48,8 +48,48 @@ public class PartitaPCDAO implements DAOConstants {
 	        }
 	    }
 	}
-
 	
+	//getAllMatches
+
+	public PartitaPC[] getAllMatches(Connection conn) throws DAOException {
+	    PartitaPC[] partite = null;
+	    PreparedStatement prst = null;
+	    ResultSet rs = null;
+
+	    try {
+	        prst = conn.prepareStatement(SELECT_ALL_MATCHES, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	        rs = prst.executeQuery();
+
+	        rs.last(); 
+	        int size = rs.getRow();
+	        rs.beforeFirst(); 
+
+	        partite = new PartitaPC[size];
+
+	        for (int i = 0; rs.next(); i++) {
+	            PartitaPC partita = new PartitaPC();
+	            partita.setId(rs.getLong(1));
+	            partita.setU_username(rs.getString(2));
+	            partita.setStato(rs.getString(3));
+	            partita.setPuntibanco(rs.getLong(4));
+	            partita.setPuntiutente(rs.getLong(5));
+	            partite[i] = partita;
+	        }
+	        conn.commit();
+	    } catch (SQLException e) {
+	        throw new DAOException(e);
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (prst != null) prst.close();
+	        } catch (SQLException e) {
+	            throw new DAOException(e);
+	        }
+	    }
+
+	    return partite;
+	}
+
 	
 	
 	
@@ -95,13 +135,13 @@ public class PartitaPCDAO implements DAOConstants {
 	    return partite;
 	}
 	
-	public void updatePunteggio(Connection conn, long partitaID, int puntiUtente, int puntiBanco) throws DAOException {
+	public void updatePunteggio(Connection conn, long partitaID, long pbanco, long putente) throws DAOException {
 	    PreparedStatement prst = null;
 
 	    try {
 	        prst = conn.prepareStatement(UPDATE_POINTS);
-	        prst.setInt(1, puntiUtente);
-	        prst.setInt(2, puntiBanco);
+	        prst.setLong(1, pbanco);
+	        prst.setLong(2, putente);
 	        prst.setLong(3, partitaID);
 
 	        prst.executeUpdate();
