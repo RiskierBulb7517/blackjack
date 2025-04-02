@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1" errorPage="error.jsp"%>
     
 <% if(session.getAttribute("username")==null){
 	%>    
@@ -8,7 +8,7 @@
 <head>
 <%@ include file="cdn.html"%>
 <title>Accedi</title>
-<%@ include file="navbar.jsp"%>
+<jsp:include page="navbar.jsp" />
 </head>
 <body>
 <div class="container">

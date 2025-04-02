@@ -1,7 +1,7 @@
 <%@page import="com.seba.blackjack.bc.model.PartitaPC"%>
 <%@page import="com.seba.blackjack.bc.PartitaPCBC"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="ISO-8859-1"%>
+    pageEncoding="UTF-8" errorPage="error.jsp"%>
 <%
 String username = "";
 if (session.getAttribute("username") != null) {
@@ -12,7 +12,7 @@ if (session.getAttribute("username") != null) {
 <head>
 <%@ include file="cdn.html"%>
 <title>Profilo: <%=username%></title>
-<%@ include file="navbar.jsp"%>
+<jsp:include page="navbar.jsp" />
 <script src="js/datatable.js"></script>
 </head>
 <body>

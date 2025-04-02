@@ -6,19 +6,28 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      <%if(session.getAttribute("username")==null){ %>
-        <li class="nav-item">
-          <a class="nav-link" href="<%=application.getContextPath()%>/login.jsp">Accedi</a>
-        </li>
-        <%} else{%>
+        <% if(session.getAttribute("username") == null) { %>
+          <li class="nav-item">
+            <a class="nav-link" href="<%=application.getContextPath()%>/login.jsp">Accedi</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="<%=application.getContextPath()%>/signin.jsp">Registrati</a>
+          </li>
+        <% } %>
+      </ul>
+      
+      <% if(session.getAttribute("username") != null) { %>
+        <ul class="navbar-nav ms-auto">
         <li class="nav-item">
         	<a class="nav-link" href="<%=application.getContextPath()%>/account.jsp"><%=(String) session.getAttribute("username") %></a>
         </li>
-        <%} %>
-       <li class="navbar-nav me-auto mb-2 mb-lg-0)">
-          <a class="nav-link" href="<%=application.getContextPath()%>/signin.jsp">Registrati</a>
-       </li>
-      </ul>
+          <li class="nav-item">
+            <a class="btn btn-outline-danger" href="<%=application.getContextPath()%>/logout.jsp">Logout</a>
+          </li>
+        </ul>
+      <% } %>
     </div>
   </div>
 </nav>
+
+
