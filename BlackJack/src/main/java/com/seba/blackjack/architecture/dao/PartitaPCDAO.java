@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.seba.blackjack.bc.model.PartitaPC;
 
@@ -26,11 +27,11 @@ public class PartitaPCDAO implements DAOConstants {
 	
 	//MetodoInserimentoPartita
 	
-	public void insertMatch(Connection conn, PartitaPC partita) throws DAOException {
+	public PartitaPC insertMatch(Connection conn, PartitaPC partita) throws DAOException {
 	    PreparedStatement prst = null;
 
 	    try {
-	        prst = conn.prepareStatement(INSERT_MATCH);
+	        prst = conn.prepareStatement(INSERT_MATCH, Statement.RETURN_GENERATED_KEYS);
 	        prst.setString(1, partita.getU_username()); 
 	        prst.setString(2, partita.getStato());   
 	        prst.setLong(3, partita.getPuntibanco());  
@@ -38,6 +39,14 @@ public class PartitaPCDAO implements DAOConstants {
 
 	        prst.executeUpdate();
 	        conn.commit();
+	        try (ResultSet res=prst.getGeneratedKeys()){
+	        	
+	        	if(res.next()) {
+	        		partita.setId(res.getLong(1));
+	        	}
+	        	
+	        }
+            return partita;
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -48,6 +57,8 @@ public class PartitaPCDAO implements DAOConstants {
 	        }
 	    }
 	}
+	
+	
 	
 	//getAllMatches
 
@@ -91,7 +102,30 @@ public class PartitaPCDAO implements DAOConstants {
 	}
 
 	
-	
+	public PartitaPC getPartita(Connection conn, long ID) throws DAOException{
+		PartitaPC partita=null;
+		PreparedStatement prst;
+		
+		try {
+			prst = conn.prepareStatement(SELECT_MATCH_BY_ID);
+			prst.setLong(1, ID);
+			
+			ResultSet rs=prst.executeQuery();
+			
+			if(rs.next()) {
+				partita=new PartitaPC();
+				partita.setId(rs.getLong(1));
+				partita.setU_username(rs.getString(2));
+				partita.setStato(rs.getString(3));
+				partita.setPuntibanco(rs.getLong(4));
+				partita.setPuntiutente(rs.getLong(5));
+			}
+			conn.commit();
+		}catch(SQLException e) {
+			throw new DAOException(e);
+		}
+		return partita;
+	}
 	
 	//GetPartiteInBaseAll'Utente
 	
@@ -135,14 +169,15 @@ public class PartitaPCDAO implements DAOConstants {
 	    return partite;
 	}
 	
-	public void updatePunteggio(Connection conn, long partitaID, long pbanco, long putente) throws DAOException {
+	public void update(Connection conn, long partitaID, long pbanco, long putente, String stato) throws DAOException {
 	    PreparedStatement prst = null;
 
 	    try {
 	        prst = conn.prepareStatement(UPDATE_POINTS);
 	        prst.setLong(1, pbanco);
 	        prst.setLong(2, putente);
-	        prst.setLong(3, partitaID);
+	        prst.setString(3, stato);
+	        prst.setLong(4, partitaID);
 
 	        prst.executeUpdate();
 	        conn.commit();

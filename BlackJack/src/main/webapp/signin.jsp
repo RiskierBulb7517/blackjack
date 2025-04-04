@@ -14,7 +14,7 @@
 		</header>
 		<br>
 		<form action="/<%=application.getServletContextName()%>/registra"
-			method="post" classe="form-horizontal">
+			method="post" class="form-horizontal">
 			<div class="mb-1 row">
 				<label for="username" class="col-form-label">Username</label>
 			</div>

@@ -19,13 +19,23 @@ public class PartitaPCBC {
         return new PartitaPCBC();
     }
     
-    public void createPartita(PartitaPC partita) throws DAOException {
+    public PartitaPC createPartita(PartitaPC partita) throws DAOException {
         try {
             conn = DBAccess.getConnection();
-            pdao.insertMatch(conn, partita);
+            return pdao.insertMatch(conn, partita);
+            
         } finally {
             DBAccess.closeConnection(conn);
         }
+    }
+    
+    public PartitaPC getPartitaByID(long ID) throws DAOException{
+    	try {
+    		conn=DBAccess.getConnection();
+    		return pdao.getPartita(conn, ID);
+    	} finally {
+    		DBAccess.closeConnection(conn);
+    	}
     }
     
     public PartitaPC[] getPartiteByUsername(String username) throws DAOException {
@@ -62,11 +72,11 @@ public class PartitaPCBC {
         }
     }
     
-    public void updatePunteggio(long PartitaID, long pbanco, long putente) throws DAOException{
+    public void update(long PartitaID, long pbanco, long putente, String stato) throws DAOException{
     	
     	try {
     		conn=DBAccess.getConnection();
-    		pdao.updatePunteggio(conn, PartitaID, pbanco, putente);
+    		pdao.update(conn, PartitaID, pbanco, putente, stato);
     		
     	}finally {
     		DBAccess.closeConnection(conn);

@@ -4,10 +4,8 @@ import java.sql.Connection;
 
 import com.seba.blackjack.architecture.dao.DAOException;
 import com.seba.blackjack.architecture.dao.ImmagineDAO;
-import com.seba.blackjack.architecture.dao.UtenteDAO;
 import com.seba.blackjack.architecture.dbaccess.DBAccess;
 import com.seba.blackjack.bc.model.Immagine;
-import com.seba.blackjack.bc.model.Utente;
 
 public class ImmagineBC {
 
