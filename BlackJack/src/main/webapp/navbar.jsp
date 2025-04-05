@@ -13,6 +13,10 @@
           <li class="nav-item">
             <a class="nav-link" href="<%=application.getContextPath()%>/signin.jsp">Registrati</a>
           </li>
+        <% } else { %>
+         <li class="nav-item">
+            <a class="nav-link" href="<%=application.getContextPath()%>/game.jsp">Gioca</a>
+          </li>
         <% } %>
       </ul>
       

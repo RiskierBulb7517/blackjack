@@ -11,58 +11,135 @@
     }
 	String username = (String) session.getAttribute("username");
 	partitaBean.inizializzaPartita(username);
-
-    List<Carta> manoUser = partitaBean.getManoUser();
-    List<Carta> manoBot = partitaBean.getManoBot();
 %>
 <!DOCTYPE html>
 <html>
 <head>
+<%@ include file="cdn.html"%>
     <title>Blackjack</title>
-    <%@ include file="cdn.html"%>
-    <style>
-        body { background-color: #0b3d91; color: white; text-align: center; }
-        .card-container { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
-        .card-img { width: 80px; height: auto; transition: transform 0.3s ease; }
-        .card-img:hover { transform: scale(1.1); }
-    </style>
     <jsp:include page="navbar.jsp" />
+    <style>
+        body {
+            background-color: #0b3d91;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            width: 80px;
+            height: 120px;
+            display: inline-block;
+            margin: 5px;
+            border-radius: 8px;
+            animation: flip 0.5s;
+        }
+        .card img {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid white;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-green { background-color: #28a745; color: white; }
+        .btn-yellow { background-color: #ffc107; color: black; }
+        .btn-blue { background-color: #007bff; color: white; }
+    </style>
 </head>
 <body>
-    <div class="container mt-5 p-4">
-        <h1>Benvenuto, <%= session.getAttribute("username") %></h1>
-        <h2>Blackjack</h2>
 
-        <h3>Mano del Banco</h3>
-        <div class="card-container">
-            <% for (Carta carta : manoBot) { 
-            		Immagine imm = ImmagineBC.getUBC().getImmByCartaID(carta.getId());%>
-                <img class="card-img" src="<%= imm.getUrl() %>" alt="carta" />
-            <% } %>
-        </div>
+    <h1>Benvenuto, <%= session.getAttribute("username") %></h1>
+    <h2>Gioco del Blackjack</h2>
 
-        <h3>La tua Mano</h3>
-        <div class="card-container">
-            <% for (Carta carta : manoUser) { 
-                     Immagine imm = ImmagineBC.getUBC().getImmByCartaID(carta.getId());%>
-                <img class="card-img" src="<%= imm.getUrl() %>" alt="carta" />
-            <% } %>
-        </div>
+<div class="container">
 
-        <h4 class="mt-4">Punteggio Utente: <%= partitaBean.getPunteggioGiocatore() %></h4>
-        <h4>Punteggio Banco: <%= partitaBean.getPunteggioBanco() %></h4>
+<div>
+    <h4>Carte Rimanenti nel Mazzo</h4>
+    <div id="mazzoRimanente" style="height: 130px;"></div>
+</div>
+<div>
+    <h3>Carte del Banco</h3>
+    <div id="bankHand"></div>
 
-        <div class="mt-4">
-            <form method="post" action="/<%=application.getServletContextName()%>game">
-                <button type="submit" name="azione" value="hit" class="btn btn-success btn-lg me-2">Hit</button>
-                <button type="submit" name="azione" value="stand" class="btn btn-warning btn-lg">Stand</button>
-            </form>
-        </div>
+    <h3>Le tue Carte</h3>
+    <div id="playerHand"></div>
 
-        <% if (partitaBean.isPartitaFinita()) { %>
-            <div class="alert alert-danger mt-4">La partita è finita! <a href="/<%=application.getServletContextName()%>game?azione=nuova">Gioca di nuovo</a></div>
-        <% } %>
+    <h4>Punteggio Giocatore: <span id="punteggioGiocatore">0</span></h4>
+    <h4>Punteggio Banco: <span id="punteggioBanco">0</span></h4>
+
+    <div>
+        <button class="btn-green" onclick="takeAction('hit')">Pescare</button>
+        <button class="btn-yellow" onclick="takeAction('stand')">Restare</button>
+        <button class="btn-blue" onclick="takeAction('nuova')">Nuova Partita</button>
     </div>
+</div>
+</div>
+
+
+   
+
+    <script>
+        let immaginiCarte = {};
+
+        function takeAction(action) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "game", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    immaginiCarte = response.immaginiCarte; // aggiorna mappa immagini
+
+                    document.getElementById('playerHand').innerHTML = generateCardHTML(response.manoUser);
+                    document.getElementById('bankHand').innerHTML = generateCardHTML(response.manoBot, response.bancoCoperte);
+                    document.getElementById('punteggioGiocatore').innerText = response.punteggioGiocatore;
+                    document.getElementById('punteggioBanco').innerText = response.punteggioBanco;
+             
+                    renderMazzo(response.carteNelMazzo);
+                }
+            };
+            xhr.send("azione=" + action);
+        }
+
+        function generateCardHTML(cards, coverMode) {
+            let html = '';
+            cards.forEach(function(card, i) {
+                let imgSrc;
+                if (coverMode && i === 0) {
+                    imgSrc = "img/carte/retro.png"; // carta coperta
+                } else {
+                    imgSrc = immaginiCarte[card.id]; // da mappa, fallback se manca
+                }
+                html += '<div class="card"><img src="' + imgSrc + '" alt="Carta"></div>';
+            });
+            return html;
+        }
+
+        function renderMazzo(quanteCarte) {
+            const mazzoDiv = document.getElementById("mazzoRimanente");
+            let html = '';
+            for (let i = 0; i < quanteCarte; i++) {
+                html += '<div class="card" style="position: absolute; left: ' + (i * 2) + 'px;"><img src="img/carte/retro.png" alt="Retro"></div>';
+            }
+            html += '<div style=\"position: absolute; left: 400px;\"><p>'+ quanteCarte +'</p></div>';
+            mazzoDiv.style.position = "relative";
+            mazzoDiv.style.width = (quanteCarte * 2 + 80) + "px";
+            mazzoDiv.innerHTML = html;
+        }
+        
+        // Stato iniziale
+        window.onload = function() {
+            takeAction('init');
+        };
+    </script>
+
 </body>
 </html>
 
