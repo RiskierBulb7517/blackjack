@@ -29,6 +29,7 @@ public class PartitaSessionBean implements Serializable {
 	private int punteggioGiocatore;
 	private int punteggioBanco;
 	private PartitaPC partita;
+	private boolean attesaBot; 
 
 	
 	//Inizializza la partita
@@ -94,9 +95,19 @@ public class PartitaSessionBean implements Serializable {
 	}
 
 	//Il giocatore sceglie di fermarsi
-	public void stand() throws DAOException {
+	public void stand() {
 		turnoGiocatore = false;
-
+		attesaBot=true;
+		
+		
+	}
+	
+	public void turnoBot() throws DAOException{
+		
+		if(turnoGiocatore||!attesaBot) {
+			return;
+		}
+		
 		while (calcolaPunteggio(manoBot) <= 16) {
 			manoBot.add(drawCard());
 		}
@@ -112,6 +123,7 @@ public class PartitaSessionBean implements Serializable {
 		}
 		salvaStato();
 		concludiRound();
+		
 	}
 
 	//Il round si conclude e ne inizia un'altro
@@ -154,6 +166,8 @@ public class PartitaSessionBean implements Serializable {
 			somma += 10;
 			assi--;
 		}
+		somma += assi;
+		
 		return somma;
 	}
 
@@ -213,11 +227,23 @@ public class PartitaSessionBean implements Serializable {
 			turnoGiocatore,
 			isPartitaFinita(),
 			immagini,
-			carte.size()
+			carte.size(),
+			attesaBot
 		);
 	}
 
 	
+
+
+	public boolean isAttesaBot() {
+		return attesaBot;
+	}
+
+	public void setAttesaBot(boolean attesaBot) {
+		this.attesaBot = attesaBot;
+	}
+
+
 
 
 	public static class GameState  implements Serializable{
@@ -233,10 +259,11 @@ public class PartitaSessionBean implements Serializable {
 		private boolean partitaFinita;
 		private Map<Long, String> immaginiCarte; // ID carta -> URL immagine
 		private int carteNelMazzo;
+		private boolean attesaBot;
 
 		public GameState(List<Carta> manoUser, List<Carta> manoBot, int punteggioGiocatore,
 				int punteggioBanco, boolean turnoGiocatore, boolean partitaFinita,
-				Map<Long, String> immaginiCarte, int carteNelMazzo) {
+				Map<Long, String> immaginiCarte, int carteNelMazzo, boolean attesaBot) {
 			this.manoUser = manoUser;
 			this.manoBot = manoBot;
 			this.punteggioGiocatore = punteggioGiocatore;
@@ -245,6 +272,7 @@ public class PartitaSessionBean implements Serializable {
 			this.partitaFinita = partitaFinita;
 			this.immaginiCarte = immaginiCarte;
 			this.carteNelMazzo = carteNelMazzo;
+			this.attesaBot = attesaBot;
 		}
 
 		public List<Carta> getManoUser() {
@@ -309,6 +337,14 @@ public class PartitaSessionBean implements Serializable {
 
 		public void setCarteNelMazzo(int carteNelMazzo) {
 			this.carteNelMazzo = carteNelMazzo;
+		}
+
+		public boolean isAttesaBot() {
+			return attesaBot;
+		}
+
+		public void setAttesaBot(boolean attesaBot) {
+			this.attesaBot = attesaBot;
 		}
 
 		

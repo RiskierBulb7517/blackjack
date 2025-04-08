@@ -98,11 +98,15 @@
                     immaginiCarte = response.immaginiCarte; // aggiorna mappa immagini
 
                     document.getElementById('playerHand').innerHTML = generateCardHTML(response.manoUser);
-                    document.getElementById('bankHand').innerHTML = generateCardHTML(response.manoBot, response.bancoCoperte);
+                    document.getElementById('bankHand').innerHTML = generateCardHTML(response.manoBot, true);
                     document.getElementById('punteggioGiocatore').innerText = response.punteggioGiocatore;
                     document.getElementById('punteggioBanco').innerText = response.punteggioBanco;
              
                     renderMazzo(response.carteNelMazzo);
+                    if (!response.turnoGiocatore && response.attesaBot) {
+                    	console.log("ciao")
+                        setTimeout(() => takeAction('botPlay'), 1000);
+                    }
                 }
             };
             xhr.send("azione=" + action);
@@ -113,7 +117,7 @@
             cards.forEach(function(card, i) {
                 let imgSrc;
                 if (coverMode && i === 0) {
-                    imgSrc = "img/carte/retro.png"; // carta coperta
+                    imgSrc = "img/cards/back_card.png"; // carta coperta
                 } else {
                     imgSrc = immaginiCarte[card.id]; // da mappa, fallback se manca
                 }
@@ -126,7 +130,7 @@
             const mazzoDiv = document.getElementById("mazzoRimanente");
             let html = '';
             for (let i = 0; i < quanteCarte; i++) {
-                html += '<div class="card" style="position: absolute; left: ' + (i * 2) + 'px;"><img src="img/carte/retro.png" alt="Retro"></div>';
+                html += '<div class="card" style="position: absolute; left: ' + (i * 2) + 'px;"><img src="img/cards/back_card.png" alt="Retro"></div>';
             }
             html += '<div style=\"position: absolute; left: 400px;\"><p>'+ quanteCarte +'</p></div>';
             mazzoDiv.style.position = "relative";

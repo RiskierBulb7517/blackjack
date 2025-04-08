@@ -43,6 +43,9 @@ public class GameServlet extends HttpServlet {
                     String username = (String) session.getAttribute("username");
                     partita.inizializzaPartita(username);
                     break;
+                case "botPlay":
+                	partita.turnoBot();
+                	break;
                 default:
                     break;
             }
