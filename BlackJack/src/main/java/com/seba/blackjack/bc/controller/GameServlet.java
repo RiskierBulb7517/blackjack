@@ -1,6 +1,5 @@
 package com.seba.blackjack.bc.controller;
 
-
 import com.google.gson.Gson;
 import com.seba.blackjack.utils.PartitaSessionBean;
 
@@ -44,18 +43,22 @@ public class GameServlet extends HttpServlet {
                     partita.inizializzaPartita(username);
                     break;
                 case "botPlay":
-                	partita.turnoBot();
-                	break;
+                    partita.turnoBotStep();
+                    break;
+                case "init":
+                    // nessuna azione: serve per ottenere lo stato iniziale
+                    break;
                 default:
                     break;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
             return;
         }
 
-        com.seba.blackjack.utils.PartitaSessionBean.GameState gameState = partita.getGameState();
+        PartitaSessionBean.GameState gameState = partita.getGameState();
         String json = gson.toJson(gameState);
         response.getWriter().write(json);
     }

@@ -1,4 +1,3 @@
-<!-- blackjack.jsp senza JSTL -->
 <%@page import="com.seba.blackjack.bc.ImmagineBC"%>
 <%@page import="com.seba.blackjack.bc.model.Immagine"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -9,14 +8,14 @@
         response.sendRedirect("login.jsp");
         return;
     }
-	String username = (String) session.getAttribute("username");
-	partitaBean.inizializzaPartita(username);
+    String username = (String) session.getAttribute("username");
+    partitaBean.inizializzaPartita(username);
 %>
 <!DOCTYPE html>
 <html>
 <head>
-<%@ include file="cdn.html"%>
     <title>Blackjack</title>
+    <%@ include file="cdn.html" %>
     <jsp:include page="navbar.jsp" />
     <style>
         body {
@@ -58,32 +57,35 @@
     <h1>Benvenuto, <%= session.getAttribute("username") %></h1>
     <h2>Gioco del Blackjack</h2>
 
-<div class="container">
+    <div class="container">
 
-<div>
-    <h4>Carte Rimanenti nel Mazzo</h4>
-    <div id="mazzoRimanente" style="height: 130px;"></div>
-</div>
-<div>
-    <h3>Carte del Banco</h3>
-    <div id="bankHand"></div>
+        <div>
+            <h4>Carte Rimanenti nel Mazzo</h4>
+            <div id="mazzoRimanente" style="height: 130px;"></div>
+        </div>
 
-    <h3>Le tue Carte</h3>
-    <div id="playerHand"></div>
+        <div>
+            <h3>Carte del Banco</h3>
+            <div id="bankHand"></div>
 
-    <h4>Punteggio Giocatore: <span id="punteggioGiocatore">0</span></h4>
-    <h4>Punteggio Banco: <span id="punteggioBanco">0</span></h4>
+            <h3>Le tue Carte</h3>
+            <div id="playerHand"></div>
+
+            <h4>Punteggio Giocatore: <span id="punteggioGiocatore">0</span></h4>
+            <h4>Punteggio Banco: <span id="punteggioBanco">0</span></h4>
+
+            <div>
+                <button class="btn-green" onclick="takeAction('hit')">Pescare</button>
+                <button class="btn-yellow" onclick="takeAction('stand')">Restare</button>
+                <button class="btn-blue" onclick="takeAction('nuova')">Nuova Partita</button>
+            </div>
+        </div>
+    </div>
 
     <div>
-        <button class="btn-green" onclick="takeAction('hit')">Pescare</button>
-        <button class="btn-yellow" onclick="takeAction('stand')">Restare</button>
-        <button class="btn-blue" onclick="takeAction('nuova')">Nuova Partita</button>
+        <h3 id="gameStatus"></h3>
+        <h2 id="messaggio"></h2>
     </div>
-</div>
-</div>
-
-
-   
 
     <script>
         let immaginiCarte = {};
@@ -95,49 +97,59 @@
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
-                    immaginiCarte = response.immaginiCarte; // aggiorna mappa immagini
+                    // Aggiorna la mappa delle immagini
+                    immaginiCarte = response.immaginiCarte;
 
-                    document.getElementById('playerHand').innerHTML = generateCardHTML(response.manoUser);
+                    // Aggiorna le mani
+                    document.getElementById('playerHand').innerHTML = generateCardHTML(response.manoUser, false);
+                    // Se il turno del giocatore è terminato, mostra tutte le carte del banco scoperte (la carta coperta viene rivelata)
                     document.getElementById('bankHand').innerHTML = generateCardHTML(response.manoBot, true);
+                    
+                    // Aggiorna punteggi
                     document.getElementById('punteggioGiocatore').innerText = response.punteggioGiocatore;
                     document.getElementById('punteggioBanco').innerText = response.punteggioBanco;
-             
+                    
+                    // Aggiorna il mazzo rimanente
                     renderMazzo(response.carteNelMazzo);
+                    
+                    // Visualizza eventuale messaggio (es. "Hai sballato!", "Black Jack!", ecc.)
+                    console.log("messaggio "+response.messaggio)
+                    document.getElementById('messaggio').innerText = response.messaggio;
+                    document.getElementById('gameStatus').innerText = response.gameStatus;
+                    
+                    // Se il turno è del bot, e c'è attesa per una nuova carta, richiede progressivamente 'botPlay'
                     if (!response.turnoGiocatore && response.attesaBot) {
-                    	console.log("ciao")
-                        setTimeout(() => takeAction('botPlay'), 1000);
+                        setTimeout(() => takeAction('botPlay'), 6000);
                     }
                 }
             };
             xhr.send("azione=" + action);
         }
 
+        // Genera l'HTML per mostrare le carte; se coverMode è true, la prima carta verrà mostrata coperta
         function generateCardHTML(cards, coverMode) {
             let html = '';
             cards.forEach(function(card, i) {
                 let imgSrc;
                 if (coverMode && i === 0) {
-                    imgSrc = "img/cards/back_card.png"; // carta coperta
+                    imgSrc = "img/cards/back_card.png"; // immagine della carta coperta
                 } else {
-                    imgSrc = immaginiCarte[card.id]; // da mappa, fallback se manca
+                    imgSrc = immaginiCarte[card.id];
                 }
                 html += '<div class="card"><img src="' + imgSrc + '" alt="Carta"></div>';
             });
             return html;
         }
 
+        // Renderizza il mazzo rimanente (con un'immagine fissa e il numero di carte)
         function renderMazzo(quanteCarte) {
             const mazzoDiv = document.getElementById("mazzoRimanente");
-            let html = '';
-            for (let i = 0; i < quanteCarte; i++) {
-                html += '<div class="card" style="position: absolute; left: ' + (i * 2) + 'px;"><img src="img/cards/back_card.png" alt="Retro"></div>';
-            }
-            html += '<div style=\"position: absolute; left: 400px;\"><p>'+ quanteCarte +'</p></div>';
+            let html = '<div class="card" style="position: absolute; left: 0px;"><img src="img/cards/back_card.png" alt="Retro"></div>';
+            html += '<div style="position: absolute; left: 100px; top: 40px;"><p style="font-size: 20px;">' + quanteCarte + '</p></div>';
             mazzoDiv.style.position = "relative";
-            mazzoDiv.style.width = (quanteCarte * 2 + 80) + "px";
             mazzoDiv.innerHTML = html;
         }
-        
+
         // Stato iniziale
         window.onload = function() {
             takeAction('init');
