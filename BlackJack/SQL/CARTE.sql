@@ -16,7 +16,7 @@ INSERT INTO IMMAGINI (CARTA_ID, URL_IMM) VALUES
 (1, 'img/cards/ace_of_hearts.png'), (2, 'img/cards/2_of_hearts.png'), (3, 'img/cards/3_of_hearts.png'), (4, 'img/cards/4_of_hearts.png'), 
 (5, 'img/cards/5_of_hearts.png'), (6, 'img/cards/6_of_hearts.png'), (7, 'img/cards/7_of_hearts.png'), (8, 'img/cards/8_of_hearts.png'),
 (9, 'img/cards/9_of_hearts.png'), (10, 'img/cards/10_of_hearts.png'), (11, 'img/cards/jack_of_hearts2.png'), (12, 'img/cards/queen_of_hearts2.png'), 
-(13, 'img/cards/king_of_hearts2.png'), (14, 'img/cards/ace_of_diamonds.png'), (15, 'img/cards/2_of_diammonds.png'), (16, 'img/cards/3_of_diamonds.png'),
+(13, 'img/cards/king_of_hearts2.png'), (14, 'img/cards/ace_of_diamonds.png'), (15, 'img/cards/2_of_diamonds.png'), (16, 'img/cards/3_of_diamonds.png'),
 (17, 'img/cards/4_of_diamonds.png'), (18, 'img/cards/5_of_diamonds.png'), (19, 'img/cards/6_of_diamonds.png'), (20, 'img/cards/7_of_diamonds.png'), 
 (21, 'img/cards/8_of_diamonds.png'), (22, 'img/cards/9_of_diamonds.png'), (23, 'img/cards/10_of_diamonds.png'), (24, 'img/cards/jack_of_diamonds2.png'),
 (25, 'img/cards/queen_of_diamonds2.png'), (26, 'img/cards/king_of_diamonds2.png'), (27, 'img/cards/ace_of_clubs.png'),

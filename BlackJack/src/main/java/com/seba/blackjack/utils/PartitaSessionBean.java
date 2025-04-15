@@ -31,6 +31,7 @@ public class PartitaSessionBean implements Serializable {
     private boolean attesaBot; // indica se il bot deve ancora pescare in modo progressivo
     private String messaggio; // messaggio per eventuali eventi (Black Jack, sballo, vittoria, ecc.)
     private boolean canHit;
+    private boolean fineRound;
 
     // Inizializza la partita
     public void inizializzaPartita(String username) throws DAOException {
@@ -48,7 +49,7 @@ public class PartitaSessionBean implements Serializable {
     }
 
     // Inizia un round
-    private void startRound() throws DAOException {
+    public void startRound() throws DAOException {
         if (carte.size() < 1) {
             partita.setStato("Finita");
             PartitaPCBC.getPBC().update(partita.getId(), punteggioBanco, punteggioGiocatore, "Finita");
@@ -56,6 +57,7 @@ public class PartitaSessionBean implements Serializable {
             return;
         }
 
+        fineRound=false;
         manoUser = new ArrayList<>();
         manoBot = new ArrayList<>();
         turnoGiocatore = true;
@@ -68,7 +70,11 @@ public class PartitaSessionBean implements Serializable {
         drawCard(manoBot);
         drawCard(manoUser);
 
-        boolean bjUser = checkBlackJack(manoUser);
+        blackJack();
+    }
+
+	public void blackJack() throws DAOException {
+		boolean bjUser = checkBlackJack(manoUser);
         boolean bjBot = checkBlackJack(manoBot);
 
         if (bjUser || bjBot) {
@@ -83,10 +89,9 @@ public class PartitaSessionBean implements Serializable {
                 messaggio = "Black Jack per il banco! Hai perso il round.";
             }
             salvaStato();
-            // Attende qualche secondo e inizia il nuovo round
-            startRound();
+            concludiRound();
         }
-    }
+	}
 
     // Il giocatore sceglie di pescare
     public void hit() throws DAOException {
@@ -117,22 +122,24 @@ public class PartitaSessionBean implements Serializable {
         if (turnoGiocatore || !attesaBot) {
             return;
         }
-        // Se il punteggio del bot è ≤ 16, il bot pesca una carta
+  
         if (calcolaPunteggio(manoBot) <= 16) {
             drawCard(manoBot);
             // Se dopo la pescata il punteggio è ancora ≤ 16, continua ad aspettare
-            if (calcolaPunteggio(manoBot) <= 16) {
-                attesaBot = true;
-                
-            } else {
-                attesaBot = false;
-                eseguiCalcoloEsito();
-            }
         } else {
             attesaBot = false;
             eseguiCalcoloEsito();
         }
     }
+
+	private void checkBotPoints() throws DAOException {
+		if (calcolaPunteggio(manoBot) <= 16) {
+		    attesaBot = true;
+		} else {
+		    attesaBot = false;
+		    eseguiCalcoloEsito();
+		}
+	}
 
     // Calcola il punteggio finale e aggiorna i punteggi a fine turno bot
     private void eseguiCalcoloEsito() throws DAOException {
@@ -155,13 +162,13 @@ public class PartitaSessionBean implements Serializable {
 
     // Termina il round e ne inizia uno nuovo
     private void concludiRound() throws DAOException {
+    	fineRound = true;
         if (carte.size() < 1) {
             partita.setStato("Finita");
             PartitaPCBC.getPBC().update(partita.getId(), punteggioBanco, punteggioGiocatore, "Finita");
             messaggio = "Partita finita!";
             return;
         }
-        startRound();
     }
 
     // Salva lo stato della partita nel DB
@@ -262,11 +269,20 @@ public class PartitaSessionBean implements Serializable {
             getCarteRimanenti(),
             attesaBot,
             messaggio,
-            canHit
+            canHit,
+            fineRound
         );
     }
 
-    // Classe interna per il GameState (serializzabile in JSON)
+    public boolean isFineRound() {
+		return fineRound;
+	}
+
+	public void setFineRound(boolean fineRound) {
+		this.fineRound = fineRound;
+	}
+
+	// Classe interna per il GameState (serializzabile in JSON)
     public static class GameState implements Serializable {
         private static final long serialVersionUID = 5097928478339206151L;
         private List<Carta> manoUser;
@@ -280,11 +296,12 @@ public class PartitaSessionBean implements Serializable {
         private boolean attesaBot;
         private String messaggio;
         private boolean canHit;
+        private boolean fineRound;
 
         public GameState(List<Carta> manoUser, List<Carta> manoBot, int punteggioGiocatore,
                          int punteggioBanco, boolean turnoGiocatore, boolean partitaFinita,
                          Map<Long, String> immaginiCarte, int carteNelMazzo, boolean attesaBot,
-                         String messaggio, boolean canHit) {
+                         String messaggio, boolean canHit, boolean fineRound) {
             this.manoUser = manoUser;
             this.manoBot = manoBot;
             this.punteggioGiocatore = punteggioGiocatore;
@@ -296,6 +313,7 @@ public class PartitaSessionBean implements Serializable {
             this.attesaBot = attesaBot;
             this.messaggio = messaggio;
             this.canHit = canHit;
+            this.setFineRound(fineRound);
         }
         // GETTER
         public List<Carta> getManoUser() { return manoUser; }
@@ -309,5 +327,11 @@ public class PartitaSessionBean implements Serializable {
         public boolean isAttesaBot() { return attesaBot; }
         public String getMessaggio() { return messaggio; }
         public boolean isCanHit() { return canHit; }
+		public boolean isFineRound() {
+			return fineRound;
+		}
+		public void setFineRound(boolean fineRound) {
+			this.fineRound = fineRound;
+		}
     }
 }

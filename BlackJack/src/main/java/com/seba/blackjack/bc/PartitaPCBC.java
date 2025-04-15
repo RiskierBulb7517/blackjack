@@ -63,7 +63,7 @@ public class PartitaPCBC {
         }
     }
     
-    public void deleteLastMatchByID(long ID) throws DAOException {
+    public void deleteMatchByID(long ID) throws DAOException {
         try {
             conn = DBAccess.getConnection();
             pdao.deleteMatchByID(conn, ID);

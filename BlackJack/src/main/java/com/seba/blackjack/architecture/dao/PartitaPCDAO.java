@@ -231,6 +231,7 @@ public class PartitaPCDAO implements DAOConstants {
 	        prst.setLong(1, partitaID);
 
 	        prst.executeUpdate();
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {
@@ -307,6 +308,7 @@ public class PartitaPCDAO implements DAOConstants {
 	        prst = conn.prepareStatement(DELETE_ALL_MATCHES_BY_USER);
 	        prst.setString(1, username);
 	        prst.executeUpdate();
+	        conn.commit();
 	    } catch (SQLException e) {
 	        throw new DAOException(e);
 	    } finally {

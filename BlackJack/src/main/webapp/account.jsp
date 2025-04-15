@@ -1,7 +1,7 @@
 <%@page import="com.seba.blackjack.bc.model.PartitaPC"%>
 <%@page import="com.seba.blackjack.bc.PartitaPCBC"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" errorPage="error.jsp"%>
+	pageEncoding="UTF-8" errorPage="error.jsp"%>
 <%
 String username = "";
 if (session.getAttribute("username") != null) {
@@ -29,19 +29,29 @@ if (session.getAttribute("username") != null) {
 					<th>Stato</th>
 					<th>Punti Banco</th>
 					<th>Punti Utente</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-			
-			<%for(int i=0;i<partite.length;i++){ 
-			PartitaPC partita=partite[i];
-			%>
-			<tr style="vertical-align: middle;">
-				<td> <%= partita.getStato() %></td>
-				<td> <%= partita.getPuntibanco() %></td>
-				<td> <%= partita.getPuntiutente() %></td>
-			</tr>
-			<%} %>
+
+				<%
+				for (int i = 0; i < partite.length; i++) {
+					PartitaPC partita = partite[i];
+				%>
+				<tr style="vertical-align: middle;">
+					<td><%=partita.getStato()%></td>
+					<td><%=partita.getPuntibanco()%></td>
+					<td><%=partita.getPuntiutente()%></td>
+					<td>
+						<form method="POST"
+							action="/<%=application.getServletContextName()%>/delete?id=<%=partita.getId()%>">
+								<button class="btn btn-danger btn-sm" type="submit"><i class="bi bi-trash"></i></button>
+						</form>
+						</td>
+				</tr>
+				<%
+				}
+				%>
 			</tbody>
 
 		</table>

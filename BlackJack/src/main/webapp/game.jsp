@@ -58,6 +58,10 @@
     <h2>Gioco del Blackjack</h2>
 
     <div class="container">
+    
+    <div>
+        <h2 id="messaggio"></h2>
+    </div>
 
         <div>
             <h4>Carte Rimanenti nel Mazzo</h4>
@@ -82,10 +86,6 @@
         </div>
     </div>
 
-    <div>
-        <h3 id="gameStatus"></h3>
-        <h2 id="messaggio"></h2>
-    </div>
 
     <script>
         let immaginiCarte = {};
@@ -111,16 +111,68 @@
                     
                     // Aggiorna il mazzo rimanente
                     renderMazzo(response.carteNelMazzo);
-                    
                     // Visualizza eventuale messaggio (es. "Hai sballato!", "Black Jack!", ecc.)
-                    console.log("messaggio "+response.messaggio)
-                    document.getElementById('messaggio').innerText = response.messaggio;
-                    document.getElementById('gameStatus').innerText = response.gameStatus;
+                    if(response.partitaFinita){
+    	                Swal.fire({
+    	                    icon: 'info',
+    	                    title: 'Partita finita!',
+    	                    html: "<p>"+response.messaggio+"</p>"+"<br><p>Punteggio banco: </p>"+response.punteggioBanco+
+    	                    	 "<br><br><p>Carte del banco: </p><br>"+
+    	                          generateCardHTML(response.manoBot, false)+
+    	                          "<br>"+
+    	                          "<p>Carte del giocatore: </p><br>"+"<br><p>Punteggio giocatore: </p>"+response.punteggioGiocatore+
+    	                          generateCardHTML(response.manoUser, false),
+    	                    confirmButtonText: "Torna all'account"
+    	                }).then((result) => {
+    	                    // Fa partire un nuovo round solo quando l’utente clicca "Avanti"
+    	                    if(result.isConfirmed){
+    	                    	window.location.href = "account.jsp";	
+    	                    } 
+    	                });
+                    }
+                          if (response.messaggio && response.messaggio.toLowerCase().includes("black jack")) {
+	                Swal.fire({
+	                    icon: 'info',
+	                    title: 'Black Jack!',
+	                    html: "<p>"+response.messaggio+"</p>"+"<br><p>Punteggio banco: </p>"+response.punteggioBanco+
+	                    	 "<br><br><p>Carte del banco: </p><br>"+
+	                          generateCardHTML(response.manoBot, false)+
+	                          "<br>"+
+	                          "<p>Carte del giocatore: </p><br>"+"<br><p>Punteggio giocatore: </p>"+response.punteggioGiocatore+
+	                          generateCardHTML(response.manoUser, false),
+	                    confirmButtonText: 'Continua'
+	                }).then(() => {
+	                    // Fa partire un nuovo round solo quando l’utente clicca "Avanti"
+	                    takeAction('round');
+	                });
+	            } else { 
+                    document.getElementById('messaggio').innerText = response.messaggio;}
+	
+	            // Se fine round (flag booleano dal backend), mostra alert con risultato e bottone per nuovo round
+	            console.log(response.fineRound)
+	            if (response.fineRound) {
+	                Swal.fire({
+	                    title: 'Risultato',
+
+	                    html: "<p>"+response.messaggio+"</p>"+"<br><p>Punteggio banco: </p>"+response.punteggioBanco+"<br><br><p>Carte del banco: </p><br>"+
+                        generateCardHTML(response.manoBot, false)+
+                        "<br>"+"<br><p>Punteggio banco: </p>"+response.punteggioGiocatore+
+                        "<p>Carte del giocatore: </p><br>"+
+                        generateCardHTML(response.manoUser, false),
+	                    icon: response.vittoriaGiocatore === true ? 'success' : 
+	                          response.vittoriaGiocatore === false ? 'error' : 'info',
+	                    confirmButtonText: 'Avanti'
+	                }).then(() => {
+	                    // Fa partire un nuovo round solo quando l’utente clicca "Avanti"
+	                    takeAction('round');
+	                });
+	            }
+
                     
                     // Se il turno è del bot, e c'è attesa per una nuova carta, richiede progressivamente 'botPlay'
                     if (!response.turnoGiocatore && response.attesaBot) {
-                        setTimeout(() => takeAction('botPlay'), 6000);
-                    }
+                        setTimeout(() => takeAction('botPlay'), 1500);
+                    }  
                 }
             };
             xhr.send("azione=" + action);

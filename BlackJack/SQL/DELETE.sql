@@ -1,1 +1,1 @@
-delete from PARTITAPC;
+delete from IMMAGINI;

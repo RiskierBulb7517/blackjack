@@ -38,16 +38,22 @@ public class GameServlet extends HttpServlet {
                 case "stand":
                     partita.stand();
                     break;
+                case "round":
+                	partita.startRound();
+                	break;
+                case "botPlay":
+                    partita.turnoBotStep();
+                    break;
                 case "nuova":
                     String username = (String) session.getAttribute("username");
                     partita.inizializzaPartita(username);
                     break;
-                case "botPlay":
-                    partita.turnoBotStep();
-                    break;
                 case "init":
                     // nessuna azione: serve per ottenere lo stato iniziale
                     break;
+                case "account":
+                	response.sendRedirect("account.jsp");
+                	return;
                 default:
                     break;
             }
