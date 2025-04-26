@@ -79,7 +79,7 @@
             <h4>Punteggio Banco: <span id="punteggioBanco">0</span></h4>
 
             <div>
-                <button class="btn-green" onclick="takeAction('hit')">Pescare</button>
+                <button class="btn-green" onclick="takeAction('hit')" id="pesca">Pescare</button>
                 <button class="btn-yellow" onclick="takeAction('stand')">Restare</button>
                 <button class="btn-blue" onclick="takeAction('nuova')">Nuova Partita</button>
             </div>
@@ -109,6 +109,11 @@
                     document.getElementById('punteggioGiocatore').innerText = response.punteggioGiocatore;
                     document.getElementById('punteggioBanco').innerText = response.punteggioBanco;
                     
+                    document.getElementById('pesca').disabled=response.punteggioManoGiocatore==21||
+                    						response.carteNelMazzo==0||response.blackJack;
+                    
+                    
+                    
                     // Aggiorna il mazzo rimanente
                     renderMazzo(response.carteNelMazzo);
                     // Visualizza eventuale messaggio (es. "Hai sballato!", "Black Jack!", ecc.)
@@ -130,33 +135,38 @@
     	                    } 
     	                });
                     }
-                          if (response.messaggio && response.messaggio.toLowerCase().includes("black jack")) {
-	                Swal.fire({
-	                    icon: 'info',
-	                    title: 'Black Jack!',
-	                    html: "<p>"+response.messaggio+"</p>"+"<br><p>Punteggio banco: </p>"+response.punteggioBanco+
-	                    	 "<br><br><p>Carte del banco: </p><br>"+
-	                          generateCardHTML(response.manoBot, false)+
-	                          "<br>"+
-	                          "<p>Carte del giocatore: </p><br>"+"<br><p>Punteggio giocatore: </p>"+response.punteggioGiocatore+
-	                          generateCardHTML(response.manoUser, false),
-	                    confirmButtonText: 'Continua'
-	                }).then(() => {
-	                    // Fa partire un nuovo round solo quando l’utente clicca "Avanti"
-	                    takeAction('round');
-	                });
+                    
+                    
+                       if (response.blackJack) {
+                    	   setTimeout(function() {
+
+                           	console.log("qui?")
+                    		    Swal.fire({
+                    		        icon: 'info',
+                    		        title: 'Black Jack!',
+                    		        html: "<p>" + response.messaggio + "</p><br><p>Punteggio banco: </p>" + response.punteggioBanco +
+                    		              "<br><br><p>Carte del banco: </p><br>" +
+                    		              generateCardHTML(response.manoBot, false) +
+                    		              "<br>" +
+                    		              "<p>Carte del giocatore: </p><br><br><p>Punteggio giocatore: </p>" + response.punteggioGiocatore +
+                    		              generateCardHTML(response.manoUser, false),
+                    		        confirmButtonText: 'Continua'
+                    		    }).then(() => {
+                    		        takeAction('round');
+                    		    });
+                    		}, 3000);
+
+	               
 	            } else { 
                     document.getElementById('messaggio').innerText = response.messaggio;}
-	
-	            // Se fine round (flag booleano dal backend), mostra alert con risultato e bottone per nuovo round
-	            console.log(response.fineRound)
-	            if (response.fineRound) {
+
+	            if (response.fineRound&&!response.blackJack&& !response.partitaFinita) {
 	                Swal.fire({
 	                    title: 'Risultato',
 
 	                    html: "<p>"+response.messaggio+"</p>"+"<br><p>Punteggio banco: </p>"+response.punteggioBanco+"<br><br><p>Carte del banco: </p><br>"+
                         generateCardHTML(response.manoBot, false)+
-                        "<br>"+"<br><p>Punteggio banco: </p>"+response.punteggioGiocatore+
+                        "<br>"+"<br><p>Punteggio giocatore: </p>"+response.punteggioGiocatore+
                         "<p>Carte del giocatore: </p><br>"+
                         generateCardHTML(response.manoUser, false),
 	                    icon: response.vittoriaGiocatore === true ? 'success' : 

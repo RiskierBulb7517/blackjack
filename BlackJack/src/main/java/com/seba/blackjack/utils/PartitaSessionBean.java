@@ -261,6 +261,7 @@ public class PartitaSessionBean implements Serializable {
         return new GameState(
             manoUser,
             manoBot,
+            calcolaPunteggio(manoUser),
             punteggioGiocatore,
             punteggioBanco,
             turnoGiocatore,
@@ -270,7 +271,8 @@ public class PartitaSessionBean implements Serializable {
             attesaBot,
             messaggio,
             canHit,
-            fineRound
+            fineRound,
+            checkBlackJack(manoBot)||checkBlackJack(manoUser)
         );
     }
 
@@ -281,12 +283,13 @@ public class PartitaSessionBean implements Serializable {
 	public void setFineRound(boolean fineRound) {
 		this.fineRound = fineRound;
 	}
-
+	
 	// Classe interna per il GameState (serializzabile in JSON)
     public static class GameState implements Serializable {
         private static final long serialVersionUID = 5097928478339206151L;
         private List<Carta> manoUser;
         private List<Carta> manoBot;
+        private long punteggioManoGiocatore;
         private int punteggioGiocatore;
         private int punteggioBanco;
         private boolean turnoGiocatore;
@@ -297,13 +300,15 @@ public class PartitaSessionBean implements Serializable {
         private String messaggio;
         private boolean canHit;
         private boolean fineRound;
+        private boolean blackJack;
 
-        public GameState(List<Carta> manoUser, List<Carta> manoBot, int punteggioGiocatore,
+        public GameState(List<Carta> manoUser, List<Carta> manoBot, long punteggioManoGiocatore, int punteggioGiocatore,
                          int punteggioBanco, boolean turnoGiocatore, boolean partitaFinita,
                          Map<Long, String> immaginiCarte, int carteNelMazzo, boolean attesaBot,
-                         String messaggio, boolean canHit, boolean fineRound) {
+                         String messaggio, boolean canHit, boolean fineRound, boolean blackJack) {
             this.manoUser = manoUser;
             this.manoBot = manoBot;
+            this.punteggioManoGiocatore=punteggioManoGiocatore;
             this.punteggioGiocatore = punteggioGiocatore;
             this.punteggioBanco = punteggioBanco;
             this.turnoGiocatore = turnoGiocatore;
@@ -313,11 +318,13 @@ public class PartitaSessionBean implements Serializable {
             this.attesaBot = attesaBot;
             this.messaggio = messaggio;
             this.canHit = canHit;
-            this.setFineRound(fineRound);
+            this.fineRound= fineRound;
+            this.blackJack=blackJack;
         }
         // GETTER
         public List<Carta> getManoUser() { return manoUser; }
         public List<Carta> getManoBot() { return manoBot; }
+        public long getPunteggioManoGiocatore() { return punteggioManoGiocatore; }
         public int getPunteggioGiocatore() { return punteggioGiocatore; }
         public int getPunteggioBanco() { return punteggioBanco; }
         public boolean isTurnoGiocatore() { return turnoGiocatore; }
@@ -327,6 +334,10 @@ public class PartitaSessionBean implements Serializable {
         public boolean isAttesaBot() { return attesaBot; }
         public String getMessaggio() { return messaggio; }
         public boolean isCanHit() { return canHit; }
+        
+		public boolean isBlackJack() {
+			return blackJack;
+		}
 		public boolean isFineRound() {
 			return fineRound;
 		}
