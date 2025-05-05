@@ -125,7 +125,7 @@
     	                    	 "<br><br><p>Carte del banco: </p><br>"+
     	                          generateCardHTML(response.manoBot, false)+
     	                          "<br>"+
-    	                          "<p>Carte del giocatore: </p><br>"+"<br><p>Punteggio giocatore: </p>"+response.punteggioGiocatore+
+    	                          "<p>Carte del giocatore: </p><br>"+"<p>Punteggio giocatore: </p>"+response.punteggioGiocatore+
     	                          generateCardHTML(response.manoUser, false),
     	                    confirmButtonText: "Torna all'account"
     	                }).then((result) => {
@@ -135,9 +135,7 @@
     	                    } 
     	                });
                     }
-                    
-                    
-                       if (response.blackJack) {
+                    if (response.blackJack) {
                     	   setTimeout(function() {
 
                            	console.log("qui?")
@@ -148,15 +146,13 @@
                     		              "<br><br><p>Carte del banco: </p><br>" +
                     		              generateCardHTML(response.manoBot, false) +
                     		              "<br>" +
-                    		              "<p>Carte del giocatore: </p><br><br><p>Punteggio giocatore: </p>" + response.punteggioGiocatore +
+                    		              "<p>Carte del giocatore: </p><br><p>Punteggio giocatore: </p>" + response.punteggioGiocatore +
                     		              generateCardHTML(response.manoUser, false),
                     		        confirmButtonText: 'Continua'
                     		    }).then(() => {
                     		        takeAction('round');
                     		    });
                     		}, 3000);
-
-	               
 	            } else { 
                     document.getElementById('messaggio').innerText = response.messaggio;}
 
@@ -177,9 +173,7 @@
 	                    takeAction('round');
 	                });
 	            }
-
-                    
-                    // Se il turno è del bot, e c'è attesa per una nuova carta, richiede progressivamente 'botPlay'
+					// Se il turno è del bot, e c'è attesa per una nuova carta, richiede progressivamente 'botPlay'
                     if (!response.turnoGiocatore && response.attesaBot) {
                         setTimeout(() => takeAction('botPlay'), 1500);
                     }  

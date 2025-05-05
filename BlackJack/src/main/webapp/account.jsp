@@ -24,7 +24,7 @@ if (session.getAttribute("username") != null) {
 		%>
 
 		<table class="table table-bordered">
-			<thead class="table-dark">
+			<thead>
 				<tr>
 					<th>Stato</th>
 					<th>Punti Banco</th>
