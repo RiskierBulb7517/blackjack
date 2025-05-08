@@ -13,6 +13,7 @@
         min-height: 100vh;
     }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
 	<div class="container d-flex justify-content-center">

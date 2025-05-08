@@ -1,20 +1,14 @@
-$(document).ready(function(){
+    $(document).ready(function() {
+        $('#partiteTable').hide();
 
-	
-	
-	$('table').hide();
-	
-	$('table').each(function(){
-	
-			$(this).DataTable({
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/it-IT.json' // Traduzione italiana
-      }
+        $('#partiteTable').DataTable({
+			responsive: true,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/it-IT.json'
+            }
+        });
+
+        setTimeout(function () {
+            $('#partiteTable').fadeIn(300);
+        }, 100);
     });
-		}
-	);
-	
-	setTimeout(function(){
-		$('table').fadeIn(300);
-	}, 100);
-});
