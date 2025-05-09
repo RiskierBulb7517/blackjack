@@ -24,14 +24,16 @@
             text-align: center;
             font-family: Arial, sans-serif;
         }
+
         .card {
-            width: 80px;
-            height: 120px;
+            width: 120px;
+            height: 180px;
             display: inline-block;
-            margin: 5px;
+            margin: 10px;
             border-radius: 8px;
             animation: flip 0.5s;
         }
+        
         .card img {
             width: 100%;
             height: 100%;
@@ -39,17 +41,109 @@
             object-fit: cover;
             border: 1px solid white;
         }
+
         button {
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 18px;
+            padding: 8px 16px;
+            margin: 8px;
+            font-size: 16px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
+            outline: none;
+            box-shadow: none;
+            transition: background-color 0.2s, transform 0.1s;
         }
+
+        button:focus,
+        button:hover {
+            outline: none;
+            box-shadow: none;
+            transform: scale(1.03);
+        }
+
         .btn-green { background-color: #28a745; color: white; }
         .btn-yellow { background-color: #ffc107; color: black; }
         .btn-blue { background-color: #007bff; color: white; }
+
+        /* New layout styles */
+        .game-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .cards-section {
+            text-align: center;
+        }
+
+        .cards-section h3, .cards-section h4 {
+            margin-bottom: 10px;
+        }
+
+        #mazzoRimanente {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 30px;
+        }
+
+        #playerHand, #bankHand {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .score-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Repositioning elements */
+        .game-container {
+            flex-direction: row;
+        }
+
+        .hand-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #bankHand {
+            margin-bottom: 10px;
+        }
+
+        #playerHand {
+            margin-top: 10px;
+        }
+
+        /* New style for remaining cards */
+		.mazzo-container {
+		    position: relative;
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		}
+		
+		.mazzo-container .card {
+		    position: relative;
+		}
+		
+		.mazzo-container .card-number {
+		    position: absolute;
+		    top: -30px; /* Posiziona il numero sopra la carta */
+		    left: 50%; /* Posiziona al centro orizzontalmente */
+		    transform: translateX(-50%); /* Centra il numero rispetto alla carta */
+		    font-size: 24px;
+		    font-weight: bold;
+		    color: white;
+		    z-index: 1; /* Assicura che il numero sia sopra la carta */
+		}
     </style>
 </head>
 <body>
@@ -57,33 +151,41 @@
     <h1>Benvenuto, <%= session.getAttribute("username") %></h1>
     <h2>Gioco del Blackjack</h2>
 
-    <div class="container">
-    
-    <div>
-        <h2 id="messaggio"></h2>
-    </div>
+       <div class="container">
 
-        <div>
-            <h4>Carte Rimanenti nel Mazzo</h4>
-            <div id="mazzoRimanente" style="height: 130px;"></div>
+        <div class="game-container">
+            <!-- Mazzo Rimanente -->
+			<div id="mazzoRimanente" class="mazzo-container">
+			    <div class="card">
+			        <img src="img/cards/back_card.png" alt="Retro">
+			        <div class="card-number" id="mazzoCarteRimanenti">0</div> <!-- Numero sopra la carta -->
+			    </div>
+			</div>
+            <div class="container">
+                        <!-- Sezione Banco -->
+			            <div class="hand-container">
+			                <h3>Punteggio Banco: <span id="punteggioBanco">0</span></h3>
+			                <div id="bankHand"></div>
+			            </div>
+			
+			            <!-- Sezione Giocatore -->
+			            <div class="hand-container">
+			                <h3>Punteggio Giocatore: <span id="punteggioGiocatore">0</span></h3>
+			                <div id="playerHand"></div>
+			            </div>
+            </div>
+
         </div>
 
-        <div>
-            <h3>Carte del Banco</h3>
-            <div id="bankHand"></div>
-
-            <h3>Le tue Carte</h3>
-            <div id="playerHand"></div>
-
-            <h4>Punteggio Giocatore: <span id="punteggioGiocatore">0</span></h4>
-            <h4>Punteggio Banco: <span id="punteggioBanco">0</span></h4>
-
+        <div class="score-section">
+            <h2 id="messaggio"></h2>
             <div>
                 <button class="btn-green" onclick="takeAction('hit')" id="pesca">Pescare</button>
                 <button class="btn-yellow" onclick="takeAction('stand')">Restare</button>
                 <button class="btn-blue" onclick="takeAction('nuova')">Nuova Partita</button>
             </div>
         </div>
+
     </div>
 
 
@@ -125,7 +227,8 @@
     	                    	 "<br><br><p>Carte del banco: </p><br>"+
     	                          generateCardHTML(response.manoBot, false)+
     	                          "<br>"+
-    	                          "<p>Carte del giocatore: </p><br>"+"<p>Punteggio giocatore: </p>"+response.punteggioGiocatore+
+    	                          "<p>Punteggio giocatore: </p><br>"+response.punteggioGiocatore+
+    	                          "<p>Carte del giocatore: </p><br>"+
     	                          generateCardHTML(response.manoUser, false),
     	                    confirmButtonText: "Torna all'account"
     	                }).then((result) => {
