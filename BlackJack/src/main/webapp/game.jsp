@@ -17,17 +17,41 @@
     <title>Blackjack</title>
     <%@ include file="cdn.html" %>
     <jsp:include page="navbar.jsp" />
+    
     <style>
         body {
             background-color: #0b3d91;
             color: white;
             text-align: center;
             font-family: Arial, sans-serif;
+            height: 100vh;
+            
         }
+        html, body {
+		    margin: 0;
+		    padding: 0;
+		    height: 100vh;
+		    overflow: hidden; /* blocca lo scroll verticale */
+		    display: flex;
+		    flex-direction: column;
+		}
+		
+		.container {
+		    flex: 1;
+		    display: flex;
+		    flex-direction: column;
+		    justify-content: space-between;
+		    overflow: hidden;
+		}
+		
+		.game-container {
+		    flex: 1;
+		    overflow: auto; /* se serve lo scroll interno, metti qui */
+		}
 
         .card {
-            width: 120px;
-            height: 180px;
+            width: 90px;
+            height: 130px;
             display: inline-block;
             margin: 10px;
             border-radius: 8px;
@@ -67,11 +91,12 @@
 
         /* New layout styles */
         .game-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
+		    display: flex;
+		    justify-content: center; 
+		    align-items: center;
+		    margin-top: 20px;
+		    margin-bottom: 20px;
+		    position: relative; 
         }
 
         .cards-section {
@@ -114,6 +139,7 @@
             align-items: center;
         }
 
+
         #bankHand {
             margin-bottom: 10px;
         }
@@ -136,41 +162,38 @@
 		
 		.mazzo-container .card-number {
 		    position: absolute;
-		    top: -30px; /* Posiziona il numero sopra la carta */
+		    top: -100px; /* Posiziona il numero sopra la carta */
 		    left: 50%; /* Posiziona al centro orizzontalmente */
 		    transform: translateX(-50%); /* Centra il numero rispetto alla carta */
 		    font-size: 24px;
 		    font-weight: bold;
 		    color: white;
-		    z-index: 1; /* Assicura che il numero sia sopra la carta */
 		}
     </style>
 </head>
 <body>
-
-    <h1>Benvenuto, <%= session.getAttribute("username") %></h1>
     <h2>Gioco del Blackjack</h2>
 
        <div class="container">
 
-        <div class="game-container">
+        <div class="game-container shadow-lg">
             <!-- Mazzo Rimanente -->
 			<div id="mazzoRimanente" class="mazzo-container">
 			    <div class="card">
 			        <img src="img/cards/back_card.png" alt="Retro">
-			        <div class="card-number" id="mazzoCarteRimanenti">0</div> <!-- Numero sopra la carta -->
+			        <div class="card-number" id="mazzoCarteRimanenti">0</div> 
 			    </div>
 			</div>
             <div class="container">
                         <!-- Sezione Banco -->
 			            <div class="hand-container">
-			                <h3>Punteggio Banco: <span id="punteggioBanco">0</span></h3>
+			                <h4>Punteggio Banco: <span id="punteggioBanco">0</span></h3>
 			                <div id="bankHand"></div>
 			            </div>
 			
 			            <!-- Sezione Giocatore -->
 			            <div class="hand-container">
-			                <h3>Punteggio Giocatore: <span id="punteggioGiocatore">0</span></h3>
+			                <h4>Punteggio Giocatore: <span id="punteggioGiocatore">0</span></h3>
 			                <div id="playerHand"></div>
 			            </div>
             </div>
@@ -238,7 +261,7 @@
     	                    } 
     	                });
                     }
-                    if (response.blackJack) {
+                    if (response.blackJack&&!response.partitaFinita) {
                     	   setTimeout(function() {
 
                            	console.log("qui?")
@@ -302,11 +325,9 @@
 
         // Renderizza il mazzo rimanente (con un'immagine fissa e il numero di carte)
         function renderMazzo(quanteCarte) {
-            const mazzoDiv = document.getElementById("mazzoRimanente");
-            let html = '<div class="card" style="position: absolute; left: 0px;"><img src="img/cards/back_card.png" alt="Retro"></div>';
-            html += '<div style="position: absolute; left: 100px; top: 40px;"><p style="font-size: 20px;">' + quanteCarte + '</p></div>';
+            const mazzoDiv = document.getElementById("mazzoCarteRimanenti");
             mazzoDiv.style.position = "relative";
-            mazzoDiv.innerHTML = html;
+            mazzoDiv.innerHTML = quanteCarte;
         }
 
         // Stato iniziale

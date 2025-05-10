@@ -1,0 +1,15 @@
+html {
+	position: relative;
+	min-height: 100%;
+	scrollbar-width: none;/*firefox*/
+	-ms-overflow-style: none; /*microsoft exlorer/edge*/
+	height: 100vh;
+	
+}
+
+
+/*Pre la scrollbar di chrome*/
+/*Bisogna farlo a livello globale*/
+::-webkit-scrollbar {
+	display: none;
+}
