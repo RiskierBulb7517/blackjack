@@ -135,8 +135,7 @@
         .hand-container {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
+		    align-items: flex-start;
         }
 
 
@@ -172,9 +171,10 @@
     </style>
 </head>
 <body>
-    <h2>Gioco del Blackjack</h2>
+    
 
-       <div class="container">
+       <div class="container mt-4">
+       <h2>Gioco del Blackjack</h2>
 
         <div class="game-container shadow-lg">
             <!-- Mazzo Rimanente -->
@@ -204,7 +204,7 @@
             <h2 id="messaggio"></h2>
             <div>
                 <button class="btn-green" onclick="takeAction('hit')" id="pesca">Pescare</button>
-                <button class="btn-yellow" onclick="takeAction('stand')">Restare</button>
+                <button class="btn-yellow" onclick="takeAction('stand')" id="resta">Restare</button>
                 <button class="btn-blue" onclick="takeAction('nuova')">Nuova Partita</button>
             </div>
         </div>
@@ -236,7 +236,8 @@
                     
                     document.getElementById('pesca').disabled=response.punteggioManoGiocatore==21||
                     						response.carteNelMazzo==0||response.blackJack;
-                    
+                    document.getElementById('resta').disabled=response.blackJack;
+                    document.getElementById('messaggio').innerText = "";
                     
                     
                     // Aggiorna il mazzo rimanente

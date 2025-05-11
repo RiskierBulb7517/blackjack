@@ -66,6 +66,16 @@ if (session.getAttribute("username") != null) {
 		    border: none !important;
 		}
 		        
+		select[name="partiteTable_length"] {
+            padding-right: 1rem !important;
+        }
+
+        .dataTables_length select {
+            background-image: none !important;
+            appearance: auto !important;
+            -webkit-appearance: auto !important;
+            -moz-appearance: auto !important;
+        }
     </style>
     <script>
 	document.addEventListener("DOMContentLoaded", function () {
