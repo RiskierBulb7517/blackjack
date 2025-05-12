@@ -153,6 +153,7 @@
 		    display: flex;
 		    align-items: center;
 		    justify-content: center;
+		    width: 250px;
 		}
 		
 		.mazzo-container .card {
@@ -168,6 +169,11 @@
 		    font-weight: bold;
 		    color: white;
 		}
+		#messaggio {
+		    min-height: 1.5em; /* oppure un'altezza fissa in px, tipo 40px */
+		    margin: 0;
+		    transition: opacity 0.3s ease;
+		}
     </style>
 </head>
 <body>
@@ -175,7 +181,7 @@
 
        <div class="container mt-4">
        <h2>Gioco del Blackjack</h2>
-
+		
         <div class="game-container shadow-lg">
             <!-- Mazzo Rimanente -->
 			<div id="mazzoRimanente" class="mazzo-container">
@@ -203,6 +209,7 @@
         <div class="score-section">
             <h2 id="messaggio"></h2>
             <div>
+                
                 <button class="btn-green" onclick="takeAction('hit')" id="pesca">Pescare</button>
                 <button class="btn-yellow" onclick="takeAction('stand')" id="resta">Restare</button>
                 <button class="btn-blue" onclick="takeAction('nuova')">Nuova Partita</button>
@@ -213,6 +220,21 @@
 
 
     <script>
+		    // Genera l'HTML per mostrare le carte; se coverMode è true, la prima carta verrà mostrata coperta
+		    function generateCardHTML(cards, coverMode) {
+		        let html = '';
+		        cards.forEach(function(card, i) {
+		            let imgSrc;
+		            if (coverMode && i === 0) {
+		                imgSrc = "img/cards/back_card.png"; // immagine della carta coperta
+		            } else {
+		                imgSrc = immaginiCarte[card.id];
+		            }
+		            html += '<div class="card"><img src="' + imgSrc + '" alt="Carta"></div>';
+		        });
+		        return html;
+		    }
+   
         let immaginiCarte = {};
 
         function takeAction(action) {
@@ -247,13 +269,14 @@
     	                Swal.fire({
     	                    icon: 'info',
     	                    title: 'Partita finita!',
-    	                    html: "<p>"+response.messaggio+"</p>"+"<br><p>Punteggio banco: </p>"+response.punteggioBanco+
-    	                    	 "<br><br><p>Carte del banco: </p><br>"+
-    	                          generateCardHTML(response.manoBot, false)+
-    	                          "<br>"+
-    	                          "<p>Punteggio giocatore: </p><br>"+response.punteggioGiocatore+
-    	                          "<p>Carte del giocatore: </p><br>"+
-    	                          generateCardHTML(response.manoUser, false),
+    	                    html: `
+    	                        <p><strong>`+response.messaggio+`</strong></p>
+    	                        <p><strong>Carte del banco:</strong></p>`+
+    	                        generateCardHTML(response.manoBot, false)+
+    	                        `<p><strong>Carte del giocatore:</strong></p>`+
+    	                        generateCardHTML(response.manoUser, false)+
+    	                       ` <p><strong>Punteggio totale banco:`+response.punteggioBanco+ `</strong></p>`+
+    	                       ` <p><strong>Punteggio totale giocatore:`+ response.punteggioGiocatore+ `</strong></p>`,
     	                    confirmButtonText: "Torna all'account"
     	                }).then((result) => {
     	                    // Fa partire un nuovo round solo quando l’utente clicca "Avanti"
@@ -269,12 +292,14 @@
                     		    Swal.fire({
                     		        icon: 'info',
                     		        title: 'Black Jack!',
-                    		        html: "<p>" + response.messaggio + "</p><br><p>Punteggio banco: </p>" + response.punteggioBanco +
-                    		              "<br><br><p>Carte del banco: </p><br>" +
-                    		              generateCardHTML(response.manoBot, false) +
-                    		              "<br>" +
-                    		              "<p>Carte del giocatore: </p><br><p>Punteggio giocatore: </p>" + response.punteggioGiocatore +
-                    		              generateCardHTML(response.manoUser, false),
+                    		        html:`
+            	                        <p><strong>`+response.messaggio+`</strong></p>
+            	                        <p><strong>Carte del banco:</strong></p>`+
+            	                        generateCardHTML(response.manoBot, false)+
+            	                        `<p><strong>Carte del giocatore:</strong></p>`+
+            	                        generateCardHTML(response.manoUser, false)+
+            	                       ` <p><strong>Punteggio totale banco:`+response.punteggioBanco+ `</strong></p>`+
+            	                       ` <p><strong>Punteggio totale giocatore:`+ response.punteggioGiocatore+ `</strong></p>`,
                     		        confirmButtonText: 'Continua'
                     		    }).then(() => {
                     		        takeAction('round');
@@ -287,11 +312,14 @@
 	                Swal.fire({
 	                    title: 'Risultato',
 
-	                    html: "<p>"+response.messaggio+"</p>"+"<br><p>Punteggio banco: </p>"+response.punteggioBanco+"<br><br><p>Carte del banco: </p><br>"+
-                        generateCardHTML(response.manoBot, false)+
-                        "<br>"+"<br><p>Punteggio giocatore: </p>"+response.punteggioGiocatore+
-                        "<p>Carte del giocatore: </p><br>"+
-                        generateCardHTML(response.manoUser, false),
+	                    html:`
+	                        <p><strong>`+response.messaggio+`</strong></p>
+	                        <p><strong>Carte del banco:</strong></p>`+
+	                        generateCardHTML(response.manoBot, false)+
+	                        `<p><strong>Carte del giocatore:</strong></p>`+
+	                        generateCardHTML(response.manoUser, false)+
+	                       ` <p><strong>Punteggio totale banco:`+response.punteggioBanco+ `</strong></p>`+
+	                       ` <p><strong>Punteggio totale giocatore:`+ response.punteggioGiocatore+ `</strong></p>`,
 	                    icon: response.vittoriaGiocatore === true ? 'success' : 
 	                          response.vittoriaGiocatore === false ? 'error' : 'info',
 	                    confirmButtonText: 'Avanti'
@@ -309,20 +337,7 @@
             xhr.send("azione=" + action);
         }
 
-        // Genera l'HTML per mostrare le carte; se coverMode è true, la prima carta verrà mostrata coperta
-        function generateCardHTML(cards, coverMode) {
-            let html = '';
-            cards.forEach(function(card, i) {
-                let imgSrc;
-                if (coverMode && i === 0) {
-                    imgSrc = "img/cards/back_card.png"; // immagine della carta coperta
-                } else {
-                    imgSrc = immaginiCarte[card.id];
-                }
-                html += '<div class="card"><img src="' + imgSrc + '" alt="Carta"></div>';
-            });
-            return html;
-        }
+
 
         // Renderizza il mazzo rimanente (con un'immagine fissa e il numero di carte)
         function renderMazzo(quanteCarte) {

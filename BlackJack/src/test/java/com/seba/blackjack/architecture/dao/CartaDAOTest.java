@@ -1,4 +1,4 @@
-package test.com.seba.blackjack.architecture.dao;
+package com.seba.blackjack.architecture.dao;
 
 import static org.junit.jupiter.api.Assertions.*;
 

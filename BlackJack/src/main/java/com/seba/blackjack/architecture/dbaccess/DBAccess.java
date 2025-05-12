@@ -18,7 +18,7 @@ public class DBAccess implements DAOConstants{
 	
 	private static DataSource dataSource;
 	
-	private static final String CONFIG_FILE = "properties/config.properties";
+	private static final String CONFIG_FILE = "config.properties";
 	
 	
 	static {

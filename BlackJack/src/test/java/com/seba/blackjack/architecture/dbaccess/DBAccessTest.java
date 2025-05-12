@@ -1,4 +1,4 @@
-package test.com.seba.blackjack.architecture.dbaccess;
+package com.seba.blackjack.architecture.dbaccess;
 
 import static org.junit.jupiter.api.Assertions.*;
 
