@@ -127,6 +127,7 @@ if (session.getAttribute("username") != null) {
                         <th>Stato</th>
                         <th>Punti Banco</th>
                         <th>Punti Utente</th>
+                        <th>Risultato</th>
                         <th>Azioni</th>
                     </tr>
                 </thead>
@@ -138,6 +139,13 @@ if (session.getAttribute("username") != null) {
                         <td><%=partita.getStato()%></td>
                         <td><%=partita.getPuntibanco()%></td>
                         <td><%=partita.getPuntiutente()%></td>
+                        <%if(partita.getPuntiutente() > partita.getPuntibanco()) {%>
+                        	<td>Vinta</td>
+                        <%} else if(partita.getPuntiutente() < partita.getPuntibanco()) {%>
+                        	<td>Persa</td>
+                        <% } else {%>
+                        	<td>Pareggio</td>
+                        	<% } %>
                         <td>
 							<form method="POST"
 							      action="/<%=application.getServletContextName()%>/delete?id=<%=partita.getId()%>"
