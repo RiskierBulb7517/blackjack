@@ -2,6 +2,8 @@
     pageEncoding="ISO-8859-1" errorPage="error.jsp"%>
     
 <% if(session.getAttribute("username")==null){
+	 String error = request.getParameter("error");
+	 
 	%>    
 <!DOCTYPE html>
 <html>
@@ -18,8 +20,13 @@
 </style>
 </head>
 <body>
-
+        <% if(error!=null) { %>
+				    <div class="alert alert-danger text-center rounded-0 mb-0" role="alert">
+				        <%= error %>
+				    </div>
+				<% } %>
     <div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+
         <div class="card text-white bg-secondary bg-opacity-25 shadow-lg p-4 rounded-4" style="min-width: 350px; max-width: 500px; width: 100%;">
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">Accedi al tuo account</h2>

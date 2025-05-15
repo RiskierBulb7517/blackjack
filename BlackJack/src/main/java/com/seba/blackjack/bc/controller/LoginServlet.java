@@ -44,7 +44,7 @@ public class LoginServlet extends HttpServlet {
 			try {
 				
 				if(!utenteBC.checkPass(username, password)) {
-					response.sendRedirect("login.jsp");
+					response.sendRedirect("login.jsp?error=Credenziali Non Valide");
 					return;
 				}
 				session.setAttribute("username",username);
