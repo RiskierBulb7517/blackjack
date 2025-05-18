@@ -1,6 +1,7 @@
 package com.seba.blackjack.bc.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 public class PartitaPC implements Serializable{
@@ -12,6 +13,8 @@ public class PartitaPC implements Serializable{
 	private String stato;
 	private long puntibanco;
 	private long puntiutente;
+	private Date dataInserimento;
+	private Date dataModifica;
 	public long getId() {
 		return id;
 	}
@@ -42,6 +45,19 @@ public class PartitaPC implements Serializable{
 	public void setPuntiutente(long puntiutente) {
 		this.puntiutente = puntiutente;
 	}
+	
+	public Date getDataInserimento() {
+		return dataInserimento;
+	}
+	public void setDataInserimento(Date dataInserimento) {
+		this.dataInserimento = dataInserimento;
+	}
+	public Date getDataModifica() {
+		return dataModifica;
+	}
+	public void setDataModifica(Date dataModifica) {
+		this.dataModifica = dataModifica;
+	}
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, puntibanco, puntiutente, stato, u_username);
@@ -61,7 +77,9 @@ public class PartitaPC implements Serializable{
 	@Override
 	public String toString() {
 		return "PartitaPC [id=" + id + ", u_username=" + u_username + ", stato=" + stato + ", puntibanco=" + puntibanco
-				+ ", puntiutente=" + puntiutente + "]";
+				+ ", puntiutente=" + puntiutente + ", dataInserimento=" + dataInserimento + ", dataModifica="
+				+ dataModifica + "]";
 	}
+	
 	
 }

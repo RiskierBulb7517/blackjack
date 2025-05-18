@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import com.seba.blackjack.bc.model.PartitaPC;
 
@@ -36,7 +38,8 @@ public class PartitaPCDAO implements DAOConstants {
 	        prst.setString(2, partita.getStato());   
 	        prst.setLong(3, partita.getPuntibanco());  
 	        prst.setLong(4, partita.getPuntiutente());
-
+	        prst.setTimestamp(5, new Timestamp(new Date().getTime()));
+	        prst.setTimestamp(6, new Timestamp(new Date().getTime()));
 	        prst.executeUpdate();
 	        conn.commit();
 	        try (ResultSet res=prst.getGeneratedKeys()){
@@ -84,6 +87,8 @@ public class PartitaPCDAO implements DAOConstants {
 	            partita.setStato(rs.getString(3));
 	            partita.setPuntibanco(rs.getLong(4));
 	            partita.setPuntiutente(rs.getLong(5));
+	            partita.setDataInserimento(new Date(rs.getTimestamp(6).getTime()));
+	            partita.setDataModifica(new Date(rs.getTimestamp(7).getTime()));
 	            partite[i] = partita;
 	        }
 	        conn.commit();
@@ -119,6 +124,8 @@ public class PartitaPCDAO implements DAOConstants {
 				partita.setStato(rs.getString(3));
 				partita.setPuntibanco(rs.getLong(4));
 				partita.setPuntiutente(rs.getLong(5));
+				partita.setDataInserimento(new Date(rs.getTimestamp(6).getTime()));
+	            partita.setDataModifica(new Date(rs.getTimestamp(7).getTime()));
 			}
 			conn.commit();
 		}catch(SQLException e) {
@@ -152,6 +159,8 @@ public class PartitaPCDAO implements DAOConstants {
 	            partita.setStato(rs.getString(3));
 	            partita.setPuntibanco(rs.getLong(4));
 	            partita.setPuntiutente(rs.getLong(5));
+	            partita.setDataInserimento(new Date(rs.getTimestamp(6).getTime()));
+	            partita.setDataModifica(new Date(rs.getTimestamp(7).getTime()));
 	            partite[i] = partita;
 	        }
 	        conn.commit();
@@ -171,14 +180,15 @@ public class PartitaPCDAO implements DAOConstants {
 	
 	public void update(Connection conn, long partitaID, long pbanco, long putente, String stato) throws DAOException {
 	    PreparedStatement prst = null;
+	    System.err.println("Partita: "+putente+", "+pbanco);
 
 	    try {
 	        prst = conn.prepareStatement(UPDATE_POINTS);
 	        prst.setLong(1, pbanco);
 	        prst.setLong(2, putente);
 	        prst.setString(3, stato);
-	        prst.setLong(4, partitaID);
-
+	        prst.setLong(5, partitaID);
+	        prst.setTimestamp(4, new Timestamp(new Date().getTime()));
 	        prst.executeUpdate();
 	        conn.commit();
 	    } catch (SQLException e) {
@@ -286,6 +296,8 @@ public class PartitaPCDAO implements DAOConstants {
 	            partita.setStato(rs.getString(3));
 	            partita.setPuntibanco(rs.getLong(4));
 	            partita.setPuntiutente(rs.getLong(5));
+	            partita.setDataInserimento(new Date(rs.getTimestamp(6).getTime()));
+	            partita.setDataModifica(new Date(rs.getTimestamp(7).getTime()));
 	        }
 	        conn.commit();
 	    } catch (SQLException e) {

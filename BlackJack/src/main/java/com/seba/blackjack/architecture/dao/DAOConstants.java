@@ -9,9 +9,9 @@ public interface DAOConstants {
 	String SELECT_IMAGECARD="SELECT * FROM IMMAGINI WHERE CARTA_ID = ?";
 	String SELECT_CARD_BY_VALUE_AND_SEED="SELECT * FROM CARTA WHERE Valore = ? AND Seme = ?";
 	String SELECT_CARD_BY_ID="SELECT * FROM CARTA WHERE ID= ?";
-	String INSERT_MATCH="INSERT INTO PARTITAPC(U_Username,Status,Puntibanco,Puntiutente) VALUES (?,?,?,?)";
+	String INSERT_MATCH="INSERT INTO PARTITAPC(U_Username,Status,Puntibanco,Puntiutente,DataInserimento,DataModifica) VALUES (?,?,?,?,?,?)";
 	String SELECT_USER_BY_ID="SELECT * FROM UTENTE WHERE ID = ?";
-	String UPDATE_POINTS="UPDATE PARTITAPC SET Puntiutente = ?, Puntibanco = ?, Status = ? WHERE ID = ?";
+	String UPDATE_POINTS="UPDATE PARTITAPC SET Puntiutente = ?, Puntibanco = ?, Status = ?, DataModifica = ? WHERE ID = ?";
 	String SELECT_POINTS="SELECT Puntiutente, Puntibanco FROM PARTITAPC WHERE ID = ?";
 	String DELETE_MATCH="DELETE FROM PARTITAPC WHERE ID = ?";
 	String SELECT_MATCH_BY_ID="SELECT * FROM PARTITAPC WHERE ID = ?";
