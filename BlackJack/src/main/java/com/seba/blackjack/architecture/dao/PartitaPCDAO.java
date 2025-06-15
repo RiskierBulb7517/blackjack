@@ -180,12 +180,12 @@ public class PartitaPCDAO implements DAOConstants {
 	
 	public void update(Connection conn, long partitaID, long pbanco, long putente, String stato) throws DAOException {
 	    PreparedStatement prst = null;
-	    System.err.println("Partita: "+putente+", "+pbanco);
+	    System.err.println("Ore: "+new Date().toString());
 
 	    try {
 	        prst = conn.prepareStatement(UPDATE_POINTS);
-	        prst.setLong(1, pbanco);
-	        prst.setLong(2, putente);
+	        prst.setLong(1, putente);
+	        prst.setLong(2, pbanco);
 	        prst.setString(3, stato);
 	        prst.setLong(5, partitaID);
 	        prst.setTimestamp(4, new Timestamp(new Date().getTime()));
